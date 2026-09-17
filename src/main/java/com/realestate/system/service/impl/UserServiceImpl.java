@@ -4,9 +4,9 @@ import com.realestate.system.entity.User;
 import com.realestate.system.repository.UserRepository;
 import com.realestate.system.service.UserService;
 import lombok.RequiredArgsConstructor;
-import model.dto.request.CreateUserRequest;
-import model.dto.request.UpdateUserRequest;
-import model.dto.response.UserResponse;
+import com.realestate.system.model.dto.request.CreateUserRequest;
+import com.realestate.system.model.dto.request.UpdateUserRequest;
+import com.realestate.system.model.dto.response.UserResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

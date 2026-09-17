@@ -1,4 +1,4 @@
-package model.dto.response;
+package com.realestate.system.model.dto.response;
 
 import com.realestate.system.enums.UserRole;
 import com.realestate.system.enums.UserStatus;

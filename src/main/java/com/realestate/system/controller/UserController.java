@@ -1,12 +1,11 @@
 package com.realestate.system.controller;
 
-import com.realestate.system.entity.User;
 import com.realestate.system.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import model.dto.request.CreateUserRequest;
-import model.dto.request.UpdateUserRequest;
-import model.dto.response.UserResponse;
+import com.realestate.system.model.dto.request.CreateUserRequest;
+import com.realestate.system.model.dto.request.UpdateUserRequest;
+import com.realestate.system.model.dto.response.UserResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,10 +1,9 @@
 package com.realestate.system.service;
 
 
-import com.realestate.system.entity.User;
-import model.dto.request.CreateUserRequest;
-import model.dto.request.UpdateUserRequest;
-import model.dto.response.UserResponse;
+import com.realestate.system.model.dto.request.CreateUserRequest;
+import com.realestate.system.model.dto.request.UpdateUserRequest;
+import com.realestate.system.model.dto.response.UserResponse;
 
 import java.util.List;
 

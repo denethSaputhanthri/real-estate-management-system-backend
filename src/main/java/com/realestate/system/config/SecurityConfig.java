@@ -21,7 +21,8 @@ public class SecurityConfig {
                                 "/api/user/**",
                                 "/api/properties/**",
                                 "/api/inquiries/**",
-                                "/api/bookings/**"
+                                "/api/bookings/**",
+                                "/api/transactions/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 );

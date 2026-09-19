@@ -20,7 +20,8 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/api/user/**",
                                 "/api/properties/**",
-                                "/api/inquiries/**"
+                                "/api/inquiries/**",
+                                "/api/bookings/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 );

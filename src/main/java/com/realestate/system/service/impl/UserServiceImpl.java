@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import com.realestate.system.model.dto.request.CreateUserRequest;
 import com.realestate.system.model.dto.request.UpdateUserRequest;
 import com.realestate.system.model.dto.response.UserResponse;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,13 +17,14 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponse createUser(CreateUserRequest request) {
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setPhone(request.getPhone());
        User savedUser = userRepository.save(user);
         return mapToResponse(savedUser);

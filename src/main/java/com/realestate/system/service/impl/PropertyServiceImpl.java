@@ -4,6 +4,8 @@ import com.realestate.system.entity.Property;
 import com.realestate.system.entity.User;
 import com.realestate.system.enums.PropertyStatus;
 import com.realestate.system.enums.PropertyType;
+import com.realestate.system.exception.BadRequestException;
+import com.realestate.system.exception.ResourceNotFoundException;
 import com.realestate.system.model.dto.request.CreatePropertyRequest;
 import com.realestate.system.model.dto.request.UpdatePropertyRequest;
 import com.realestate.system.model.dto.response.PropertyResponse;
@@ -13,6 +15,7 @@ import com.realestate.system.repository.UserRepository;
 import com.realestate.system.service.PropertyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -29,13 +32,13 @@ public class PropertyServiceImpl implements PropertyService {
     public PropertyResponse createProperty(CreatePropertyRequest request) {
 
         User owner = userRepository.findById(request.getOwnerId())
-                .orElseThrow(() -> new RuntimeException("Owner not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Owner not found with id: " + request.getOwnerId()));
 
         User agent = null;
 
         if (request.getAgentId() != null) {
             agent = userRepository.findById(request.getAgentId())
-                    .orElseThrow(() -> new RuntimeException("Agent not found"));
+                    .orElseThrow(() -> new RequestRejectedException("Agent not found with id: " + request.getAgentId()));
         }
 
         Property property = new Property();
@@ -57,7 +60,7 @@ public class PropertyServiceImpl implements PropertyService {
     @Override
     public PropertyResponse getPropertyById(Long id) {
         Property property = propertyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Property not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Property not found" + id));
         return mapToResponse(property);
     }
 
@@ -72,7 +75,7 @@ public class PropertyServiceImpl implements PropertyService {
     @Override
     public PropertyResponse updateProperty(Long id, UpdatePropertyRequest request) {
         Property existingProperty = propertyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Property not founded"));
+                .orElseThrow(() -> new ResourceNotFoundException("Property not founded with id: " + id));
 
         if (request.getTitle() != null) {
             existingProperty.setTitle(request.getTitle());
@@ -105,7 +108,7 @@ public class PropertyServiceImpl implements PropertyService {
         if (request.getAgentId() != null) {
 
             User agent = userRepository.findById(request.getAgentId())
-                    .orElseThrow(() -> new RuntimeException("Agent not found"));
+                    .orElseThrow(() -> new BadRequestException("Agent not found with id: " + request.getAgentId()));
 
             existingProperty.setAgent(agent);
         }
@@ -122,7 +125,7 @@ public class PropertyServiceImpl implements PropertyService {
     @Override
     public void deleteProperty(Long id) {
         Property property = propertyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Property not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Property not found: " + id ));
         propertyRepository.delete(property);
     }
 

@@ -3,6 +3,7 @@ package com.realestate.system.service.impl;
 import com.realestate.system.entity.Inquiry;
 import com.realestate.system.entity.Property;
 import com.realestate.system.entity.User;
+import com.realestate.system.exception.ResourceNotFoundException;
 import com.realestate.system.model.dto.request.CreateInquiryRequest;
 import com.realestate.system.model.dto.request.UpdateInquiryRequest;
 import com.realestate.system.model.dto.response.InquiryResponse;
@@ -27,16 +28,16 @@ public class InquiryServiceImpl implements InquiryService {
     public InquiryResponse createInquiry(CreateInquiryRequest request) {
 
         Property property = propertyRepository.findById(request.getPropertyId())
-                .orElseThrow(() -> new RuntimeException("Property not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Property not found with id: " + request.getPropertyId()));
 
         User customer = userRepository.findById(request.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id " + request.getCustomerId()));
 
         User agent = null;
 
         if (request.getAgentId() != null) {
             agent = userRepository.findById(request.getAgentId())
-                    .orElseThrow(() -> new RuntimeException("Agent not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Agent not found with id " + request.getAgentId()));
         }
 
         Inquiry inquiry = new Inquiry();
@@ -68,7 +69,7 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     public InquiryResponse updateInquiry(Long id, UpdateInquiryRequest request) {
         Inquiry existingInquiry = inquiryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Inquiry not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Inquiry not found with id: " + id));
 
         if (request.getMessage() != null) {
             existingInquiry.setMessage(request.getMessage());
@@ -80,7 +81,7 @@ public class InquiryServiceImpl implements InquiryService {
 
         if (request.getAgentId() != null) {
             User agent = userRepository.findById(request.getAgentId())
-                    .orElseThrow(() -> new RuntimeException("Agent not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Agent not found id: " + request.getAgentId()));
 
             existingInquiry.setAgent(agent);
         }
@@ -92,7 +93,7 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     public void deleteInquiry(Long id) {
         Inquiry inquiry = inquiryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Inquiry not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Inquiry not found with id: " + id));
 
         inquiryRepository.delete(inquiry);
     }

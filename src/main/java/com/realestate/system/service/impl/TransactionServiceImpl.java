@@ -3,6 +3,7 @@ package com.realestate.system.service.impl;
 import com.realestate.system.entity.Property;
 import com.realestate.system.entity.Transaction;
 import com.realestate.system.entity.User;
+import com.realestate.system.exception.ResourceNotFoundException;
 import com.realestate.system.model.dto.request.CreateTransactionRequest;
 import com.realestate.system.model.dto.response.TransactionResponse;
 import com.realestate.system.repository.PropertyRepository;
@@ -26,16 +27,16 @@ public class TransactionServiceImpl implements TransactionService {
     public TransactionResponse createTransaction(CreateTransactionRequest request) {
 
         Property property = propertyRepository.findById(request.getPropertyId())
-                .orElseThrow(() -> new RuntimeException("Property not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Property not found" + request.getPropertyId()));
 
         User buyer = userRepository.findById(request.getBuyerId())
-                .orElseThrow(() -> new RuntimeException("Buyer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Buyer not found" + request.getBuyerId()));
 
         User agent = null;
 
         if (request.getAgentId() != null) {
             agent = userRepository.findById(request.getAgentId())
-                    .orElseThrow(() -> new RuntimeException("Agent not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Agent not found" + request.getAgentId()));
         }
         Transaction transaction = new Transaction();
 
@@ -57,7 +58,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public TransactionResponse getTransactionById(Long id) {
         Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transaction not found (SEARCH BY ID)"));
+                .orElseThrow(() -> new ResourceNotFoundException("Transaction not found (SEARCH BY ID)" + id));
 
         return mapToResponse(transaction);
     }
@@ -74,14 +75,14 @@ public class TransactionServiceImpl implements TransactionService {
     public TransactionResponse updateTransaction(Long id, CreateTransactionRequest request) {
 
         Transaction existingTransaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Transaction not found" + id));
 
         if (request.getPropertyId() != null) {
 
             Property property = propertyRepository.findById(
                     request.getPropertyId()
             ).orElseThrow(() ->
-                    new RuntimeException("Property not found")
+                    new ResourceNotFoundException("Property not found " + request.getPropertyId())
             );
 
             existingTransaction.setProperty(property);
@@ -92,7 +93,7 @@ public class TransactionServiceImpl implements TransactionService {
             User buyer = userRepository.findById(
                     request.getBuyerId()
             ).orElseThrow(() ->
-                    new RuntimeException("Buyer not found")
+                    new ResourceNotFoundException("Buyer not found" + request.getBuyerId())
             );
 
             existingTransaction.setBuyer(buyer);
@@ -103,7 +104,7 @@ public class TransactionServiceImpl implements TransactionService {
             User agent = userRepository.findById(
                     request.getAgentId()
             ).orElseThrow(() ->
-                    new RuntimeException("Agent not found")
+                    new ResourceNotFoundException("Agent not found" + request.getAgentId())
             );
 
             existingTransaction.setAgent(agent);
@@ -131,7 +132,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public void deleteTransaction(Long id) {
         Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
         transactionRepository.delete(transaction);
     }
 

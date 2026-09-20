@@ -1,5 +1,7 @@
 package com.realestate.system.service.impl;
 
+
+import com.realestate.system.exception.ResourceNotFoundException;
 import com.realestate.system.entity.User;
 import com.realestate.system.repository.UserRepository;
 import com.realestate.system.service.UserService;
@@ -33,7 +35,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUserById(Long id) {
         User user= userRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("User not found"));
+                .orElseThrow(()-> new ResourceNotFoundException("User not found with id: " + id));
         return mapToResponse(user);
     }
 
@@ -48,7 +50,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse updateUser(Long id, UpdateUserRequest request) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("User not found"));
+                .orElseThrow(()-> new ResourceNotFoundException("User not found this ID : " + id));
 
         if (request.getName() != null) {
             existingUser.setName(request.getName());
@@ -72,7 +74,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         User exitingUser = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found : " + id));
         userRepository.delete(exitingUser);
     }
 

@@ -25,8 +25,8 @@ public class InquiryController {
     public ResponseEntity<InquiryResponse> createInquiry(
             @Valid @RequestBody CreateInquiryRequest request) {
         return ResponseEntity
-                .status(HttpStatus.CREATED).
-                body(inquiryService.createInquiry(request));
+                .status(HttpStatus.CREATED)
+                .body(inquiryService.createInquiry(request));
     }
 
     @GetMapping

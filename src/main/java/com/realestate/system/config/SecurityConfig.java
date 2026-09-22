@@ -5,6 +5,7 @@ import com.realestate.system.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -46,7 +47,6 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
@@ -65,6 +65,73 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/api/auth/**"
                         ).permitAll()
+
+                        // Properties
+                        // Property - anyone authenticated can view
+                        .requestMatchers(HttpMethod.GET, "/api/properties/**")
+                        .hasAnyRole("CUSTOMER", "SELLER", "AGENT", "ADMIN")
+
+                        // Property - only seller, agent and admin can modify
+                        .requestMatchers(HttpMethod.POST, "/api/properties/**")
+                        .hasAnyRole("SELLER", "AGENT", "ADMIN")
+
+                        .requestMatchers(HttpMethod.PUT, "/api/properties/**")
+                        .hasAnyRole("SELLER", "AGENT", "ADMIN")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/properties/**")
+                        .hasAnyRole("SELLER", "AGENT", "ADMIN")
+
+
+                        // Inquiries
+                        .requestMatchers(HttpMethod.GET, "/api/inquiries/**")
+                        .hasAnyRole("CUSTOMER", "SELLER", "AGENT", "ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/api/inquiries/**")
+                        .hasAnyRole("CUSTOMER", "ADMIN")
+
+                        .requestMatchers(HttpMethod.PUT, "/api/inquiries/**")
+                        .hasAnyRole("AGENT", "ADMIN")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/inquiries/**")
+                        .hasRole("ADMIN")
+
+                        // Bookings
+                        .requestMatchers(HttpMethod.POST, "/api/bookings")
+                        .hasAnyRole("CUSTOMER", "ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/api/bookings")
+                        .hasAnyRole("AGENT", "ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/api/bookings/**")
+                        .hasAnyRole("CUSTOMER", "AGENT", "ADMIN")
+
+                        .requestMatchers(HttpMethod.PUT, "/api/bookings/**")
+                        .hasAnyRole("AGENT", "ADMIN")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/bookings/**")
+                        .hasAnyRole("AGENT", "ADMIN")
+
+                        // Transactions
+                        .requestMatchers(HttpMethod.POST, "/api/transactions")
+                        .hasAnyRole("CUSTOMER", "ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/api/transactions")
+                        .hasAnyRole("AGENT", "ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/api/transactions/**")
+                        .hasAnyRole("CUSTOMER", "AGENT", "ADMIN")
+
+                        .requestMatchers(HttpMethod.PUT, "/api/transactions/**")
+                        .hasAnyRole("AGENT", "ADMIN")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/transactions/**")
+                        .hasAnyRole("AGENT", "ADMIN")
+
+                        // User management - ADMIN only
+                        .requestMatchers("/api/user/**")
+                        .hasRole("ADMIN")
+
+                        // Everything else still requires authentication
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(
